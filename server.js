@@ -15,5 +15,3 @@ app.listen(port, () => {
 })
 
 mongoConnect();
-
-
