@@ -22,6 +22,7 @@ export const addUser = async (req, res) => {
       })
     }
   } catch(error) {
+    console.log(error);
     res.json({
       status: 404,
       message: "error occurred during email sending"
@@ -39,7 +40,7 @@ export const verifyEmail = async (req, res) => {
     }
     else {
       userSchema.findOneAndUpdate({ token: token},
-        { $set: { isVerified: 'true', token: null} },
+        { $set: { isVerified: 'true', token: ""} },
         { new: true}
       )
       .then(res.status(200).send("Email verified successfully"))
