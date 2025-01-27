@@ -21,7 +21,7 @@ export const sendEmail = (email) => {
     subject: 'Email Verification',
   
     text: `Hi! There, You have recently visited our website and entered your email.
-    Please follow the given link to verify your email http://localhost:3000/note/${token}`
+    Please follow the given link to verify your email http://localhost:3000/note/verify/${token}`
   }
   
   transporter.sendMail(mailConfigurations, function(error,info){

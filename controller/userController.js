@@ -1,16 +1,19 @@
 import { sendEmail } from "../emailVerify/verification.js";
 import userSchema from "../models/userSchema.js";
 import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
 
 // create
 export const addUser = async (req, res) => {
   try{
     const {email, password} = req.body;
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
     const isVerified = false;
     const token = sendEmail("aayush@itobuz.com");
     const data = await userSchema.create({
       email,
-      password,
+      password : hashedPassword,
       token,
       isVerified
     })

@@ -1,5 +1,5 @@
 import express from 'express';
-import 'dotenv/config';
+import dotenv from 'dotenv/config'
 import route from './routes/userRoute.js';
 import mongoConnect from './config/dbConnection.js';
 
