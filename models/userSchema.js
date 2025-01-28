@@ -1,6 +1,12 @@
 import mongoose from "mongoose";
+import z from 'zod';
 
 const userSchema = new mongoose.Schema({
+  userName: {
+    type: String,
+    required: true
+  },
+
   email: {
     type: String,
     required: true
@@ -8,11 +14,8 @@ const userSchema = new mongoose.Schema({
 
   password: {
     type: String,
-    required: true
-  },
-
-  token: {
-    type: String
+    required: true,
+    select: false
   },
 
   isVerified: {

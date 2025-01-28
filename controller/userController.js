@@ -6,21 +6,21 @@ import bcrypt from 'bcrypt';
 // create
 export const addUser = async (req, res) => {
   try{
-    const {email, password} = req.body;
+    const {userName, email, password} = req.body;
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(password, saltRounds);
     const isVerified = false;
-    const token = sendEmail("aayush@itobuz.com");
     const data = await userSchema.create({
+      userName,
       email,
       password : hashedPassword,
-      token,
       isVerified
     })
+    const token = sendEmail("aayush@itobuz.com");
     if(data){
       res.json({
         status: 200,
-        data:data,
+        _id:data._id,
         message: "Email sent successfully"
       })
     }
@@ -56,20 +56,21 @@ export const verifyEmail = async (req, res) => {
 export const userLogin = async (req, res) => {
   try {
     const {email, password} = req.body;
-    const user = await userSchema.findOne({ email });
+    const user = await userSchema.findOne({ email:`${email}`}, {email:1, password: 1, isVerified:1 }).exec();
 
     if(!user) {
-      return res.status(404).send("User not found");
+      return res.status(404).send("Authentication failed");
     }
 
     const passwordMatch = await bcrypt.compare(password, user.password);
 
-    if(passwordMatch) {
-      userSchema.findOneAndUpdate({ email: email},
-        { $set: { isLogged: 'true'} },
-        { new: true}
-      )
-      res.send('Login successful')
+    if(user.isVerified && passwordMatch) {
+      user.isLogged="true";
+      await user.save();
+      res.send('Login successful');
+    }
+    else if(!user.isVerified){
+      res.status(403).send('user not verified yet')
     }
     else {
       res.status(401).send('Invalid credentials');
