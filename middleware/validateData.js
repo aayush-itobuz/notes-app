@@ -2,12 +2,12 @@ import z from 'zod';
 
 const userRegistrationSchema = z.object({
   userName: z.string(),
-  email: z.string().email("invaild"),
+  email: z.string().email("invalid"),
   password: z.string().min(8, "too short")
 })
 
 const userLoginSchema = z.object({
-  email: z.string().email("invaild"),
+  email: z.string().email("invalid"),
   password: z.string().min(8, "too short")
 })
 
