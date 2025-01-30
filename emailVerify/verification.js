@@ -12,7 +12,7 @@ export const sendEmail = (email) => {
 
   const token = jwt.sign({
     data: 'Token Data'
-  }, process.env.SECRET_KEY, { expiresIn: '10m' }
+  }, process.env.SECRET_KEY, { expiresIn: '5m' }
   )
 
   const mailConfigurations = {
