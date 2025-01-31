@@ -3,7 +3,7 @@ import userSchema from "../models/userSchema.js";
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 
-// create
+// user registration 
 export const register = async (req, res) => {
   try {
     const { userName, email, password } = req.body;
@@ -84,9 +84,16 @@ export const userLogin = async (req, res) => {
     const passwordMatch = await bcrypt.compare(password, user.password);
 
     if (user.isVerified && passwordMatch) {
+      const id = user._id;
+      const accessToken = jwt.sign({ id }, process.env.SECRET_KEY, { expiresIn: '1h' });
+      const refreshToken = jwt.sign({ id }, process.env.SECRET_KEY, { expiresIn: '30d' });
       user.isLogged = "true";
       await user.save();
-      res.send('Login successful');
+      res.json({
+        message:'Login successful',
+        accessToken: accessToken,
+        refreshToken: refreshToken
+    })
     }
     else if (!user.isVerified) {
       res.status(403).json('user not verified yet')
