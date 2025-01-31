@@ -1,17 +1,17 @@
 import z from 'zod';
 
-const userRegistrationSchema = z.object({
+export const userRegistrationSchema = z.object({
   userName: z.string(),
   email: z.string().email("invalid"),
   password: z.string().min(8, "too short")
 })
 
-const userLoginSchema = z.object({
+export const userLoginSchema = z.object({
   email: z.string().email("invalid"),
   password: z.string().min(8, "too short")
 })
 
-const validateData = (schema) => {
+export const validateData = (schema) => {
   return (req, res, next) => {
     try {
       schema.parse(req.body);
@@ -27,4 +27,3 @@ const validateData = (schema) => {
     }
   }
 }
-export { userRegistrationSchema, userLoginSchema, validateData };

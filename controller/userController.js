@@ -35,7 +35,7 @@ export const register = async (req, res) => {
       res.json({
         status: 200,
         _id: data._id,
-        message: "Email sent successfully"
+        message: "Email sent successfully", 
       })
     }
   } catch (error) {
