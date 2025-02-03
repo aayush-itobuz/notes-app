@@ -36,10 +36,28 @@ export const getNote = async (req, res) => {
     }
   } catch (error) {
     console.log(error);
-    res.json({
-      status: 404,
-      message: "error occurred during note fethcing",
-    })
+    res.status(404).json("error occurred during note fethcing")
+  }
+}
+
+export const getNoteById = async (req, res) => {
+  try{
+    const id = req.body._id;
+    const userId = req.userId;
+    const note = await noteSchema.findOne({_id:id, userId:userId});
+    if(note) {
+      res.json({
+        status: 200,
+        data: note,
+        message: "note fetched successfully",
+      });
+    }
+    else {
+      res.status(404).json("note not found");
+    }
+  } catch (error){
+    console.log(error);
+    res.status(404).json("error occurred during note fethcing")
   }
 }
 
@@ -55,10 +73,7 @@ export const deleteNote = async (req, res) => {
         data: note,
       })
     } else {
-      res.json({
-        status: 404,
-        message: "note not found",
-      })
+      res.status(404).json("note not found");
     }
   } catch (error) {
     res.json({
@@ -71,7 +86,6 @@ export const deleteNote = async (req, res) => {
 
 export const updateNote = async (req, res) => {
   try{
-    console.log("update note");
     const {id, title, content} = req.body;
     const userId = req.userId;
     const note = await noteSchema.findOneAndUpdate(
