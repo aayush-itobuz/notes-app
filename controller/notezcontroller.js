@@ -34,6 +34,9 @@ export const getNote = async (req, res) => {
         message: "note fetched successfully",
       });
     }
+    else {
+      res.status(404).json("note not found");
+    }
   } catch (error) {
     console.log(error);
     res.status(404).json("error occurred during note fethcing")
@@ -58,6 +61,81 @@ export const getNoteById = async (req, res) => {
   } catch (error){
     console.log(error);
     res.status(404).json("error occurred during note fethcing")
+  }
+}
+
+export const search = async (req, res) => {
+  try {
+    const userId = req.userId;
+    console.log(userId);
+    
+    const search = req.body.search;
+    const regex = new RegExp(search, 'i');
+    const note = await noteSchema.find({title: {$regex: regex}, userId:userId})
+    if(note.length > 0) {
+      res.json({
+        status: 200,
+        data: note,
+        message: "note fetched successfully",
+      });
+    }
+    else {
+      res.json("note not found");
+    }
+  } catch (error){
+    console.log(error);
+    res.status(404).json("error occurred during note fethcing")
+  }
+}
+
+export const sort = async (req, res) => {
+  try {
+    const userId = req.userId;
+    console.log(userId);
+    const note = await noteSchema.find({userId:userId}).collation({locale:'en'}).sort({title: 'asc'});
+    if(note.length > 0) {
+      res.json({
+        status: 200,
+        data: note,
+        message: "note fetched successfully",
+      });
+    }
+    else {
+      res.json("note not found");
+    }
+  }
+  catch (error) {
+    console.error(error);
+    res.status(500).json('An error occurred');
+  }
+}
+
+export const pagination = async (req, res) => {
+  try {
+    const userId = req.userId;
+    const {page, limit} = req.body;
+    const startIndex = (page - 1) * limit;
+
+    const note = await noteSchema.find({userId: userId})
+    .sort({createdAt: -1})
+    .skip(startIndex)
+    .limit(limit);
+
+    if(note.length > 0) {
+      res.json({
+        page: page,
+        limit: limit,
+        data: note,
+        message: "note fetched successfully",
+      });
+    }
+    else {
+      res.json("note not found");
+    }
+  }
+  catch (error) {
+    console.error(error);
+    res.status(500).json('An error occurred');
   }
 }
 
