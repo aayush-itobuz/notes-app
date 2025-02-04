@@ -11,7 +11,7 @@ export const createNote = async (req, res) => {
     })
 
     await note.save();
-    if(note){
+    if (note) {
       res.json({
         status: 200,
         data: note,
@@ -44,11 +44,11 @@ export const getNote = async (req, res) => {
 }
 
 export const getNoteById = async (req, res) => {
-  try{
+  try {
     const id = req.body._id;
     const userId = req.userId;
-    const note = await noteSchema.findOne({_id:id, userId:userId});
-    if(note) {
+    const note = await noteSchema.findOne({ _id: id, userId: userId });
+    if (note) {
       res.json({
         status: 200,
         data: note,
@@ -58,7 +58,7 @@ export const getNoteById = async (req, res) => {
     else {
       res.status(404).json("note not found");
     }
-  } catch (error){
+  } catch (error) {
     console.log(error);
     res.status(404).json("error occurred during note fethcing")
   }
@@ -68,11 +68,11 @@ export const search = async (req, res) => {
   try {
     const userId = req.userId;
     console.log(userId);
-    
+
     const search = req.body.search;
     const regex = new RegExp(search, 'i');
-    const note = await noteSchema.find({title: {$regex: regex}, userId:userId})
-    if(note.length > 0) {
+    const note = await noteSchema.find({ title: { $regex: regex }, userId: userId })
+    if (note.length > 0) {
       res.json({
         status: 200,
         data: note,
@@ -82,7 +82,7 @@ export const search = async (req, res) => {
     else {
       res.json("note not found");
     }
-  } catch (error){
+  } catch (error) {
     console.log(error);
     res.status(404).json("error occurred during note fethcing")
   }
@@ -92,8 +92,8 @@ export const sort = async (req, res) => {
   try {
     const userId = req.userId;
     console.log(userId);
-    const note = await noteSchema.find({userId:userId}).collation({locale:'en'}).sort({title: 'asc'});
-    if(note.length > 0) {
+    const note = await noteSchema.find({ userId: userId }).collation({ locale: 'en' }).sort({ title: 'asc' });
+    if (note.length > 0) {
       res.json({
         status: 200,
         data: note,
@@ -113,15 +113,15 @@ export const sort = async (req, res) => {
 export const pagination = async (req, res) => {
   try {
     const userId = req.userId;
-    const {page, limit} = req.body;
+    const { page, limit } = req.body;
     const startIndex = (page - 1) * limit;
 
-    const note = await noteSchema.find({userId: userId})
-    .sort({createdAt: -1})
-    .skip(startIndex)
-    .limit(limit);
+    const note = await noteSchema.find({ userId: userId })
+      .sort({ createdAt: -1 })
+      .skip(startIndex)
+      .limit(limit);
 
-    if(note.length > 0) {
+    if (note.length > 0) {
       res.json({
         page: page,
         limit: limit,
@@ -143,7 +143,7 @@ export const deleteNote = async (req, res) => {
   try {
     const id = req.body._id;
     const userId = req.userId;
-    const note = await noteSchema.findOneAndDelete({_id:id, userId:userId});
+    const note = await noteSchema.findOneAndDelete({ _id: id, userId: userId });
     if (note) {
       res.json({
         status: 200,
@@ -163,27 +163,27 @@ export const deleteNote = async (req, res) => {
 }
 
 export const updateNote = async (req, res) => {
-  try{
-    const {id, title, content} = req.body;
+  try {
+    const { id, title, content } = req.body;
     const userId = req.userId;
     const note = await noteSchema.findOneAndUpdate(
-      {_id:id, userId:userId},
+      { _id: id, userId: userId },
       {
         title: title,
         content: content,
       },
-      {new: true}
+      { new: true }
     )
-    if(note){
+    if (note) {
       res.json({
         status: 200,
-        data:note,
+        data: note,
         message: "data updated successfully"
       })
     } else {
       res.json({
         status: 404,
-        message: "note not found", 
+        message: "note not found",
       })
     }
   } catch (error) {
@@ -193,18 +193,4 @@ export const updateNote = async (req, res) => {
       error: error.message,
     })
   }
-}
-
-export const uploadImage = async (req, res) => {
-  upload(req, res, (err) => {
-    if (err) {
-      console.error(err);
-      return res.status(500).json({ error: err });
-     }
-    if (!req.file) {
-       return res.status(400).json({ error: 'Please send file' });
-     }
-     console.log(req.file);
-     res.send('File uploaded!');
- });
 }

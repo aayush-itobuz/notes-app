@@ -1,7 +1,6 @@
 import express from 'express';
-import { createNote, deleteNote, getNote, getNoteById, pagination, search, sort, updateNote, uploadImage } from '../controller/notezcontroller.js';
+import { createNote, deleteNote, getNote, getNoteById, pagination, search, sort, updateNote} from '../controller/notezcontroller.js';
 import { verifyToken } from '../middleware/verifyToken.js';
-import { upload } from '../middleware/uploadFile.js';
 
 const route = express.Router();
 
@@ -14,6 +13,4 @@ route.get('/getById', verifyToken, getNoteById);
 route.get('/search', verifyToken, search);
 route.get('/sort', verifyToken, sort);
 route.get('/pagination', verifyToken, pagination);
-route.post('/upload', upload, uploadImage);
-
 export default route;

@@ -35,7 +35,7 @@ export const register = async (req, res) => {
       res.json({
         status: 200,
         _id: data._id,
-        message: "Email sent successfully", 
+        message: "Email sent successfully",
       })
     }
   } catch (error) {
@@ -90,10 +90,10 @@ export const userLogin = async (req, res) => {
       user.isLogged = "true";
       await user.save();
       res.json({
-        message:'Login successful',
+        message: 'Login successful',
         accessToken: accessToken,
         refreshToken: refreshToken
-    })
+      })
     }
     else if (!user.isVerified) {
       res.status(403).json('user not verified yet')

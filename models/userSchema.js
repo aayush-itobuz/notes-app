@@ -26,6 +26,11 @@ const userSchema = new mongoose.Schema({
   isLogged: {
     type: Boolean,
     default: false,
+  },
+
+  profilePic: {
+    type: String,
+    default: "",
   }
 })
 

@@ -1,29 +1,40 @@
 import multer from 'multer';
 import path from 'path';
+import userSchema from '../models/userSchema.js';
 
 const storage = multer.diskStorage({
-  destination: './uploadFiles',
-  filename: (req, res, next) => {
-    next(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname))
+  destination: './uploads',
+  filename: (req, file, cb) => {
+    cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname))
   }
 })
 
 export const upload = multer({
   storage: storage,
   limits: { fileSize: 1000000 },
-  fileFilter: (req, file, next) => {
-    checkFileType(file, next);
+});
+
+export const uploadImage = async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json('please upload file');
+    }
+
+    const userId = req.userId;
+    console.log(userId);
+
+    const user = await userSchema.findById(userId);
+    console.log(user);
+    user.profilePic = "http://localhost:3000/uploads/" + req.file.filename;
+    console.log(user.profilePic);
+    await user.save();
+    return res.status(200).json({
+      message: 'file uploaded successfully',
+      user
+    })
   }
-}).single('myFile');
-
-function checkFileType(file, next) {
-  const filetypes = /jpeg|jpg|png|gif/;
-  const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
-  const mimetype = filetypes.test(file.mimetype);
-
-  if (mimetype && extname) {
-    return next(null, true);
-  } else {
-    next('Error: Images only! (jpeg, jpg, png, gif)');
+  catch (error) {
+    console.error(error);
+    res.status(500).json('An error occurred');
   }
 }
