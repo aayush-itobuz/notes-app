@@ -26,7 +26,7 @@ export const sendEmail = (email,id) => {
   }
 
   transporter.sendMail(mailConfigurations, function (error, info) {
-    if (error) throw Error(error);
+    if (error) console.log(error);
     console.log('Email Sent Successfully');
     console.log(`token : ${token}`);
   })
